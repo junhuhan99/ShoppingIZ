@@ -31,7 +31,10 @@
       "Bash(ssh -i \"D:\\쇼핑iz\\shoppingiz.pem\" -o StrictHostKeyChecking=no ubuntu@13.125.150.235 \"mysql -u shoppingiz_user -pshoppingiz2025 shoppingiz_db -e \"\"\nCREATE TABLE IF NOT EXISTS ad_products (\n    ad_id BIGINT PRIMARY KEY AUTO_INCREMENT,\n    product_id BIGINT NOT NULL,\n    is_active BOOLEAN DEFAULT TRUE,\n    priority INT DEFAULT 0,\n    ad_budget DECIMAL(10,2) DEFAULT 0,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE,\n    UNIQUE KEY unique_product (product_id),\n    INDEX idx_active_priority (is_active, priority)\n);\"\"\")",
       "Bash(ssh -i \"D:\\쇼핑iz\\shoppingiz.pem\" -o StrictHostKeyChecking=no ubuntu@13.125.150.235 \"mysql -u shoppingiz_user -pshoppingiz2025 shoppingiz_db -e ''SHOW TABLES;''\")",
       "Bash(git commit -m \"Add admin routes and ad_products table\n\n- Added ad_products table for managing advertised products\n- Registered admin routes in app.js\n- Admin endpoints: products, prices, coupons, dashboard\n- Support for differentiating ad products from regular products\")",
-      "Bash(git push origin main)"
+      "Bash(git push origin main)",
+      "Bash(ssh -i \"D:\\쇼핑iz\\shoppingiz.pem\" -o StrictHostKeyChecking=no ubuntu@13.125.150.235 \"cd /home/ubuntu/ShoppingIZ && git pull origin main\")",
+      "Bash(curl -s http://13.125.150.235/api/admin/dashboard)",
+      "Bash(git commit -m \"Add price & coupon crawlers and admin frontend\n\n- Implemented price crawler for Coupang, Naver, 11st, Gmarket\n- Implemented coupon crawler for all platforms\n- Created comprehensive admin panel frontend\n- Admin features: dashboard, product management, crawler control\n- Added routing for admin page (/admin)\n- Updated app.js with crawler routes\")"
     ],
     "deny": [],
     "ask": []

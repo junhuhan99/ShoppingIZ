@@ -154,6 +154,9 @@ function App() {
 
       <footer className="footer">
         <p>&copy; 2025 ShoppingIZ. All rights reserved.</p>
+        <p style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
+          <a href="/admin" style={{ color: 'white', textDecoration: 'underline' }}>관리자 페이지</a>
+        </p>
       </footer>
     </div>
   );

@@ -13,6 +13,8 @@ const exchangeRoutes = require('./routes/exchange.routes');
 const priceRoutes = require('./routes/price.routes');
 const aiRoutes = require('./routes/ai.routes');
 const adminRoutes = require('./routes/admin.routes');
+const crawlerRoutes = require('./routes/crawler.routes');
+const couponCrawlerRoutes = require('./routes/coupon-crawler.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,6 +42,8 @@ app.use('/api/exchanges', exchangeRoutes);
 app.use('/api/prices', priceRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/crawler', crawlerRoutes);
+app.use('/api/coupon-crawler', couponCrawlerRoutes);
 
 // 헬스 체크
 app.get('/health', (req, res) => {
@@ -62,7 +66,9 @@ app.get('/', (req, res) => {
             exchanges: '/api/exchanges',
             prices: '/api/prices',
             ai: '/api/ai',
-            admin: '/api/admin'
+            admin: '/api/admin',
+            crawler: '/api/crawler',
+            couponCrawler: '/api/coupon-crawler'
         }
     });
 });
