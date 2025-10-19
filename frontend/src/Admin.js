@@ -3,12 +3,65 @@ import axios from 'axios';
 import './Admin.css';
 
 function Admin() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [dashboardData, setDashboardData] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://13.125.150.235/api';
+
+  // 로그인 처리
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (password === 'admin2025') {
+      setIsAuthenticated(true);
+      localStorage.setItem('adminAuth', 'true');
+    } else {
+      alert('비밀번호가 틀렸습니다');
+    }
+  };
+
+  // 로그아웃
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('adminAuth');
+  };
+
+  // 페이지 로드시 인증 상태 확인
+  useEffect(() => {
+    const auth = localStorage.getItem('adminAuth');
+    if (auth === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  // 인증되지 않은 경우 로그인 화면 표시
+  if (!isAuthenticated) {
+    return (
+      <div className="admin-container">
+        <header className="admin-header">
+          <h1>🔒 관리자 로그인</h1>
+        </header>
+        <div className="login-container">
+          <form className="login-form" onSubmit={handleLogin}>
+            <h2>ShoppingIZ 관리자</h2>
+            <input
+              type="password"
+              placeholder="관리자 비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="login-input"
+              autoFocus
+            />
+            <button type="submit" className="login-button">로그인</button>
+            <p className="login-hint">기본 비밀번호: admin2025</p>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   // 대시보드 데이터 로드
   useEffect(() => {
@@ -119,6 +172,7 @@ function Admin() {
     <div className="admin-container">
       <header className="admin-header">
         <h1>🛠️ ShoppingIZ 관리자 페이지</h1>
+        <button onClick={handleLogout} className="logout-button">로그아웃</button>
       </header>
 
       <nav className="admin-nav">

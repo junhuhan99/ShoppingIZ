@@ -8,7 +8,9 @@
       "Bash(ssh -i \"D:\\쇼핑iz\\shoppingiz.pem\" -o StrictHostKeyChecking=no ubuntu@13.125.150.235 \"cd /home/ubuntu/ShoppingIZ/backend && npm install axios cheerio && pm2 restart shoppingiz-api\")",
       "Bash(curl -s -X POST http://13.125.150.235/api/coupon-crawler/collect)",
       "Bash(curl -s http://13.125.150.235/api/products/search?q=아이폰)",
-      "Bash(git commit -m \"Final deployment - Add cheerio dependency\")"
+      "Bash(git commit -m \"Final deployment - Add cheerio dependency\")",
+      "Bash(ssh -i \"D:\\쇼핑iz\\shoppingiz.pem\" -o StrictHostKeyChecking=no ubuntu@13.125.150.235 \"mysql -u shoppingiz_user -pshoppingiz2025 shoppingiz_db < /home/ubuntu/ShoppingIZ/database/initial-products.sql 2>&1 | tail -20\")",
+      "Bash(git commit -m \"Add admin authentication and initial product data\")"
     ],
     "deny": [],
     "ask": []
