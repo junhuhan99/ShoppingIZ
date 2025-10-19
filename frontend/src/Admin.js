@@ -9,6 +9,8 @@ function Admin() {
   const [dashboardData, setDashboardData] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [crawlingResult, setCrawlingResult] = useState(null);
+  const [isCrawling, setIsCrawling] = useState(false);
   const [newProduct, setNewProduct] = useState({
     product_name: '',
     brand: '',
@@ -109,34 +111,55 @@ function Admin() {
   // 크롤러 실행
   const runCrawler = async (keyword) => {
     if (!keyword) {
-      keyword = prompt('검색할 상품 키워드를 입력하세요:');
+      keyword = prompt('검색할 상품 키워드를 입력하세요 (예: 갤럭시, 아이폰, 노트북):');
       if (!keyword) return;
     }
 
-    setLoading(true);
+    setIsCrawling(true);
+    setCrawlingResult(null);
     try {
       const response = await axios.post(`${API_BASE_URL}/crawler/search`, { keyword });
-      alert(`크롤링 완료: ${response.data.message}`);
-      loadProducts();
+
+      if (response.data.success) {
+        setCrawlingResult({
+          type: '상품',
+          keyword,
+          totalCount: response.data.totalCount,
+          crawledInfo: response.data.crawledInfo,
+          products: response.data.products || response.data.data || [],
+          message: response.data.message
+        });
+        loadProducts();
+      }
     } catch (error) {
       console.error('크롤러 실행 오류:', error);
       alert('크롤러 실행 중 오류가 발생했습니다');
     } finally {
-      setLoading(false);
+      setIsCrawling(false);
     }
   };
 
   // 쿠폰 크롤러 실행
   const runCouponCrawler = async () => {
-    setLoading(true);
+    setIsCrawling(true);
+    setCrawlingResult(null);
     try {
       const response = await axios.post(`${API_BASE_URL}/coupon-crawler/collect`);
-      alert(`쿠폰 수집 완료: ${response.data.message}`);
+
+      if (response.data.success) {
+        setCrawlingResult({
+          type: '쿠폰',
+          totalCount: response.data.totalCount,
+          crawledInfo: response.data.crawledInfo,
+          coupons: response.data.coupons || response.data.data || [],
+          message: response.data.message
+        });
+      }
     } catch (error) {
       console.error('쿠폰 크롤러 오류:', error);
       alert('쿠폰 크롤러 실행 중 오류가 발생했습니다');
     } finally {
-      setLoading(false);
+      setIsCrawling(false);
     }
   };
 
@@ -332,18 +355,93 @@ function Admin() {
             <h2>가격 크롤러</h2>
             <div className="crawler-section">
               <p>실시간으로 각 플랫폼에서 상품 가격을 수집합니다</p>
-              <button className="btn-crawler" onClick={() => runCrawler()}>
-                🔍 가격 크롤러 실행
+              <button
+                className="btn-crawler"
+                onClick={() => runCrawler()}
+                disabled={isCrawling}
+              >
+                {isCrawling ? '⏳ 크롤링 중...' : '🔍 가격 크롤러 실행'}
               </button>
             </div>
 
             <h2 style={{ marginTop: '2rem' }}>쿠폰 크롤러</h2>
             <div className="crawler-section">
               <p>각 플랫폼의 쿠폰 정보를 자동으로 수집합니다</p>
-              <button className="btn-crawler" onClick={runCouponCrawler}>
-                🎫 쿠폰 크롤러 실행
+              <button
+                className="btn-crawler"
+                onClick={runCouponCrawler}
+                disabled={isCrawling}
+              >
+                {isCrawling ? '⏳ 크롤링 중...' : '🎫 쿠폰 크롤러 실행'}
               </button>
             </div>
+
+            {/* 크롤링 결과 표시 */}
+            {crawlingResult && (
+              <div className="crawling-result">
+                <h3>✅ {crawlingResult.type} 크롤링 완료</h3>
+                <p className="result-message">{crawlingResult.message}</p>
+
+                {crawlingResult.crawledInfo && (
+                  <div className="crawled-stats">
+                    <h4>📊 플랫폼별 수집 결과:</h4>
+                    <div className="stats-row">
+                      <div className="stat-item">
+                        <span className="platform">쿠팡:</span>
+                        <span className="count">{crawlingResult.crawledInfo.coupang || 0}개</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="platform">네이버:</span>
+                        <span className="count">{crawlingResult.crawledInfo.naver || 0}개</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="platform">11번가:</span>
+                        <span className="count">{crawlingResult.crawledInfo['11st'] || 0}개</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="platform">G마켓:</span>
+                        <span className="count">{crawlingResult.crawledInfo.gmarket || 0}개</span>
+                      </div>
+                    </div>
+                    <div className="total-count">
+                      총 {crawlingResult.totalCount}개 수집
+                    </div>
+                  </div>
+                )}
+
+                {/* 수집된 상품 목록 */}
+                {crawlingResult.products && crawlingResult.products.length > 0 && (
+                  <div className="collected-items">
+                    <h4>🛍️ 수집된 상품:</h4>
+                    <div className="items-list">
+                      {crawlingResult.products.map((item, idx) => (
+                        <div key={idx} className="collected-item">
+                          <span className="item-name">{item.product_name}</span>
+                          <span className="item-platform">{item.platform}</span>
+                          <span className="item-price">{item.price?.toLocaleString()}원</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 수집된 쿠폰 목록 */}
+                {crawlingResult.coupons && crawlingResult.coupons.length > 0 && (
+                  <div className="collected-items">
+                    <h4>🎫 수집된 쿠폰:</h4>
+                    <div className="items-list">
+                      {crawlingResult.coupons.map((item, idx) => (
+                        <div key={idx} className="collected-item">
+                          <span className="item-name">{item.coupon_name}</span>
+                          <span className="item-platform">{item.platform_name}</span>
+                          <span className="item-value">{item.discount_value?.toLocaleString()}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="crawler-info">
               <h3>📌 사용 방법</h3>
@@ -351,6 +449,7 @@ function Admin() {
                 <li>가격 크롤러: 키워드 입력 후 쿠팡, 네이버, 11번가, G마켓에서 검색</li>
                 <li>쿠폰 크롤러: 모든 플랫폼의 쿠폰을 자동 수집</li>
                 <li>수집된 데이터는 자동으로 데이터베이스에 저장됩니다</li>
+                <li>실제 이미지와 현실적인 가격 정보를 수집합니다</li>
               </ul>
             </div>
           </div>

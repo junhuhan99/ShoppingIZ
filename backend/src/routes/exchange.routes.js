@@ -45,6 +45,45 @@ router.post('/propose', async (req, res) => {
 });
 
 /**
+ * 내 교환 내역 조회 (인증 필요)
+ * GET /api/exchanges/my
+ */
+router.get('/my', async (req, res) => {
+    try {
+        const userId = req.query.user_id || 1; // 임시 (실제로는 JWT에서 추출)
+
+        const [exchanges] = await pool.query(
+            `SELECT ce.*,
+                ua.nickname as user_a_nickname,
+                ub.nickname as user_b_nickname
+            FROM coupon_exchanges ce
+            LEFT JOIN users ua ON ce.user_a_id = ua.user_id
+            LEFT JOIN users ub ON ce.user_b_id = ub.user_id
+            WHERE ce.user_a_id = ? OR ce.user_b_id = ?
+            ORDER BY ce.proposed_at DESC`,
+            [userId, userId]
+        );
+
+        // 상대방 닉네임 설정
+        const formattedExchanges = exchanges.map(ex => ({
+            ...ex,
+            partner_nickname: ex.user_a_id === parseInt(userId) ? ex.user_b_nickname : ex.user_a_nickname
+        }));
+
+        res.json({
+            success: true,
+            count: formattedExchanges.length,
+            data: formattedExchanges
+        });
+    } catch (error) {
+        console.error('내 교환 내역 조회 오류:', error);
+        res.status(500).json({
+            error: '교환 내역 조회 중 오류가 발생했습니다'
+        });
+    }
+});
+
+/**
  * 교환 제안 목록 조회
  * GET /api/exchanges?user_id=1&status=PROPOSED
  */
