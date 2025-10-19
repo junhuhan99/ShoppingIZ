@@ -35,7 +35,21 @@ CREATE TABLE products (
     FULLTEXT idx_fulltext_name (product_name)
 );
 
--- 3. 카테고리 테이블
+-- 3. 광고 상품 테이블
+CREATE TABLE ad_products (
+    ad_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    product_id BIGINT NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    priority INT DEFAULT 0,
+    ad_budget DECIMAL(10,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE,
+    UNIQUE KEY unique_product (product_id),
+    INDEX idx_active_priority (is_active, priority)
+);
+
+-- 4. 카테고리 테이블
 CREATE TABLE categories (
     category_id INT PRIMARY KEY AUTO_INCREMENT,
     parent_id INT,
@@ -44,7 +58,7 @@ CREATE TABLE categories (
     FOREIGN KEY (parent_id) REFERENCES categories(category_id)
 );
 
--- 4. 쇼핑몰 플랫폼 테이블
+-- 5. 쇼핑몰 플랫폼 테이블
 CREATE TABLE platforms (
     platform_id INT PRIMARY KEY AUTO_INCREMENT,
     platform_name VARCHAR(50) NOT NULL,
@@ -54,7 +68,7 @@ CREATE TABLE platforms (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- 5. 가격 추적 테이블
+-- 6. 가격 추적 테이블
 CREATE TABLE price_tracking (
     tracking_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     product_id BIGINT,
@@ -72,7 +86,7 @@ CREATE TABLE price_tracking (
     INDEX idx_tracked_at (tracked_at)
 );
 
--- 6. 쿠폰 마스터 테이블
+-- 7. 쿠폰 마스터 테이블
 CREATE TABLE coupons (
     coupon_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     platform_id INT,
@@ -96,7 +110,7 @@ CREATE TABLE coupons (
     INDEX idx_platform (platform_id)
 );
 
--- 7. 사용자 쿠폰 보유 테이블
+-- 8. 사용자 쿠폰 보유 테이블
 CREATE TABLE user_coupons (
     user_coupon_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
@@ -111,7 +125,7 @@ CREATE TABLE user_coupons (
     INDEX idx_coupon (coupon_id)
 );
 
--- 8. 쿠폰 교환 메인 테이블 (에스크로 시스템)
+-- 9. 쿠폰 교환 메인 테이블 (에스크로 시스템)
 CREATE TABLE coupon_exchanges (
     exchange_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_a_id BIGINT NOT NULL,
@@ -129,7 +143,7 @@ CREATE TABLE coupon_exchanges (
     INDEX idx_expires (expires_at)
 );
 
--- 9. 에스크로 잠금 상태 관리
+-- 10. 에스크로 잠금 상태 관리
 CREATE TABLE escrow_locks (
     lock_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     exchange_id BIGINT NOT NULL,
@@ -146,7 +160,7 @@ CREATE TABLE escrow_locks (
     INDEX idx_user_locked (user_id, is_locked)
 );
 
--- 10. 가격 알림 설정 테이블
+-- 11. 가격 알림 설정 테이블
 CREATE TABLE price_alerts (
     alert_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
@@ -161,7 +175,7 @@ CREATE TABLE price_alerts (
     INDEX idx_product (product_id)
 );
 
--- 11. 사용자 검색 기록 테이블
+-- 12. 사용자 검색 기록 테이블
 CREATE TABLE search_history (
     history_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
@@ -174,7 +188,7 @@ CREATE TABLE search_history (
     INDEX idx_searched_at (searched_at)
 );
 
--- 12. 포인트 획득 규칙 테이블
+-- 13. 포인트 획득 규칙 테이블
 CREATE TABLE point_rules (
     rule_id INT PRIMARY KEY AUTO_INCREMENT,
     activity_type ENUM(
@@ -191,7 +205,7 @@ CREATE TABLE point_rules (
     description VARCHAR(255)
 );
 
--- 13. 사용자 포인트 이력
+-- 14. 사용자 포인트 이력
 CREATE TABLE user_points (
     point_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
@@ -204,7 +218,7 @@ CREATE TABLE user_points (
     INDEX idx_user_date (user_id, created_at)
 );
 
--- 14. 거래 평가 테이블
+-- 15. 거래 평가 테이블
 CREATE TABLE trade_reviews (
     review_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     exchange_id BIGINT NOT NULL,
@@ -220,7 +234,7 @@ CREATE TABLE trade_reviews (
     INDEX idx_reviewed (reviewed_id)
 );
 
--- 15. AI 가격 예측 데이터 테이블
+-- 16. AI 가격 예측 데이터 테이블
 CREATE TABLE ai_price_predictions (
     prediction_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     product_id BIGINT NOT NULL,
