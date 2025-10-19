@@ -1,0 +1,286 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Container */
+.container {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+}
+
+/* Search Section */
+.search-section {
+  margin-bottom: 2rem;
+}
+
+.search-section form {
+  display: flex;
+  gap: 1rem;
+}
+
+.search-input {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #667eea;
+}
+
+.search-button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.search-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #667eea;
+}
+
+/* Products Grid */
+.products-section {
+  margin-bottom: 2rem;
+}
+
+.products-section h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.product-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background-color: #f0f0f0;
+}
+
+.product-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+/* AI Recommendation */
+.recommendation-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.recommendation-section h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.recommendation-card {
+  text-align: center;
+}
+
+.recommendation-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.score-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.score-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 8px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.score-value {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.score-label {
+  font-size: 1rem;
+  color: #666;
+}
+
+.recommendation-text {
+  font-size: 1.3rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #333;
+}
+
+.buy-decision {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
+.buy-yes {
+  background: #d4edda;
+  color: #155724;
+}
+
+.buy-no {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.analysis-details {
+  text-align: left;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.analysis-details h4 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.analysis-details ul {
+  list-style: none;
+}
+
+.analysis-details li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.analysis-details li:last-child {
+  border-bottom: none;
+}
+
+/* Footer */
+.footer {
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .search-section form {
+    flex-direction: column;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .score-circle {
+    width: 120px;
+    height: 120px;
+  }
+
+  .score-value {
+    font-size: 2.5rem;
+  }
+}
